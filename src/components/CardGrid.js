@@ -1,12 +1,13 @@
 import React from "react";
 import Card from "./Card";
+import "./CardGrid.css";
 
-const CardGrid = ({ pokemons }) => {
+const CardGrid = ({ pokemons, handleClick }) => {
   const cards = pokemons.map((pokemon) => (
-    <Card key={pokemon.id} pokemon={pokemon} />
+    <Card key={pokemon.id} pokemon={pokemon} handleClick={handleClick} />
   ));
 
-  return <div>{cards}</div>;
+  return <div className="card-grid">{cards}</div>;
 };
 
 export default CardGrid;

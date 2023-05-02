@@ -4,6 +4,7 @@ import "./App.css";
 
 const App = () => {
   const [pokemons, setPokemons] = useState([]);
+  const [clickedPokemons, setClickedPokemons] = useState([]);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
 
@@ -18,7 +19,7 @@ const App = () => {
   const fetchPokemons = async (amount) => {
     const pokemons = [];
 
-    for (let i = 0; i <= amount; i++) {
+    for (let i = 0; i < amount; i++) {
       const random = Math.floor(Math.random() * 151) + 1;
       const url = `https://pokeapi.co/api/v2/pokemon/${random}`;
       const response = await fetch(url);
@@ -36,9 +37,37 @@ const App = () => {
     return pokemons;
   };
 
+  const reset = async () => {
+    setPokemons(await fetchPokemons(12));
+    setClickedPokemons([]);
+    setScore(0);
+  };
+
+  const playRound = async (pokemonName) => {
+    if (clickedPokemons.includes(pokemonName)) {
+      await reset();
+    } else {
+      const newScore = score + 1;
+      if (newScore > bestScore) setBestScore(newScore);
+      setScore(newScore);
+      setClickedPokemons((prevState) => [...prevState, pokemonName]);
+    }
+  };
+
+  const handleClick = (e) => {
+    const pokemonName = e.target.parentNode.lastChild.textContent;
+    playRound(pokemonName);
+    setPokemons(shuffleArray(pokemons));
+    console.log(score);
+  };
+
+  const shuffleArray = (array) => {
+    return [...array].sort(() => Math.random() - 0.5);
+  };
+
   return (
     <div className="App">
-      <CardGrid pokemons={pokemons} />
+      <CardGrid pokemons={pokemons} handleClick={handleClick} />
     </div>
   );
 };
