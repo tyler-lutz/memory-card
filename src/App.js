@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import CardGrid from "./components/CardGrid";
+import "./App.css";
 
-function App() {
+const App = () => {
+  const [pokemons, setPokemons] = useState([]);
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+
+  useEffect(() => {
+    const loadPokemons = async () => {
+      setPokemons(await fetchPokemons(12));
+    };
+
+    loadPokemons();
+  }, []);
+
+  const fetchPokemons = async (amount) => {
+    const pokemons = [];
+
+    for (let i = 0; i <= amount; i++) {
+      const random = Math.floor(Math.random() * 151) + 1;
+      const url = `https://pokeapi.co/api/v2/pokemon/${random}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const id = data.id;
+      const name = data.name;
+      const image = data.sprites.front_default;
+      if (pokemons.find((pokemon) => pokemon.id === id)) {
+        i--;
+        continue;
+      }
+      pokemons.push({ id, name, image });
+    }
+
+    return pokemons;
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CardGrid pokemons={pokemons} />
     </div>
   );
-}
+};
 
 export default App;
