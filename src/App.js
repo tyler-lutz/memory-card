@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CardGrid from "./components/CardGrid";
+import Header from "./components/Header";
 import "./App.css";
 
 const App = () => {
@@ -37,15 +38,14 @@ const App = () => {
     return pokemons;
   };
 
-  const reset = async () => {
-    setPokemons(await fetchPokemons(12));
+  const reset = () => {
     setClickedPokemons([]);
     setScore(0);
   };
 
-  const playRound = async (pokemonName) => {
+  const playRound = (pokemonName) => {
     if (clickedPokemons.includes(pokemonName)) {
-      await reset();
+      reset();
     } else {
       const newScore = score + 1;
       if (newScore > bestScore) setBestScore(newScore);
@@ -67,6 +67,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <Header score={score} bestScore={bestScore} />
       <CardGrid pokemons={pokemons} handleClick={handleClick} />
     </div>
   );
